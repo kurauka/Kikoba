@@ -37,7 +37,8 @@ export default function Login() {
     } catch (err: any) {
       console.error(err);
       if (err.code === 'auth/unauthorized-domain') {
-        setError('Unauthorized Domain: This domain is not whitelisted in Firebase Auth. In the Firebase Console, go to Authentication > Settings > Authorized domains and add this domain.');
+        const domain = window.location.hostname;
+        setError(`Unauthorized Domain: "${domain}" is not whitelisted. Go to Firebase Console > Authentication > Settings > Authorized domains and add "${domain}".`);
       } else {
         setError('Failed to sign in. Please try again.');
       }
