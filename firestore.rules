@@ -1,0 +1,90 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- User Rules ---
+    match /users/{userId} {
+      allow get: if isSignedIn();
+      allow list: if false; // Users shouldn't be listable generally
+      allow create, update: if isOwner(userId) && isValidUser(incoming());
+    }
+
+    function isValidUser(data) {
+      return data.email is string && data.email.size() < 256
+          && (data.uid == request.auth.uid);
+    }
+
+    // --- Chama Rules ---
+    match /chamas/{chamaId} {
+      allow get: if isSignedIn() && isChamaMember(chamaId);
+      allow list: if isSignedIn(); // We might need to filter by treasurer or member
+      allow create: if isSignedIn() && isValidChama(incoming());
+      allow update: if isSignedIn() && (isTreasurer(chamaId) || isChamaMember(chamaId)) && isValidChama(incoming());
+    }
+
+    function isValidChama(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100
+          && data.treasurerId is string && isValidId(data.treasurerId);
+    }
+
+    function isChamaMember(chamaId) {
+      return exists(/databases/$(database)/documents/chamas/$(chamaId)/members/$(request.auth.uid));
+    }
+
+    function isTreasurer(chamaId) {
+      return get(/databases/$(database)/documents/chamas/$(chamaId)).data.treasurerId == request.auth.uid;
+    }
+
+    // --- Member Rules ---
+    match /chamas/{chamaId}/members/{memberId} {
+      allow read: if isSignedIn() && isChamaMember(chamaId);
+      allow create: if isSignedIn(); // Allow joining or being added
+      allow update, delete: if isSignedIn() && isTreasurer(chamaId);
+    }
+
+    // --- Contribution Rules ---
+    match /chamas/{chamaId}/contributions/{contributionId} {
+      allow read: if isSignedIn() && isChamaMember(chamaId);
+      allow create: if isSignedIn() && isChamaMember(chamaId) && incoming().userId == request.auth.uid;
+      allow update: if isSignedIn() && isTreasurer(chamaId);
+    }
+
+    // --- Loan Rules ---
+    match /chamas/{chamaId}/loans/{loanId} {
+      allow read: if isSignedIn() && isChamaMember(chamaId);
+      allow create: if isSignedIn() && isChamaMember(chamaId) && incoming().userId == request.auth.uid;
+      allow update: if isSignedIn() && (isTreasurer(chamaId) || (isOwner(incoming().userId) && existing().status == 'requested'));
+    }
+
+    // --- Merrigo Rules ---
+    match /chamas/{chamaId}/merrigoGroups/{groupId} {
+      allow read: if isSignedIn() && isChamaMember(chamaId);
+      allow create, update: if isSignedIn() && isTreasurer(chamaId);
+    }
+  }
+}

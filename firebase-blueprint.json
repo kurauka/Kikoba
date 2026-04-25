@@ -1,0 +1,114 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile information",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "user"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Chama": {
+      "title": "Chama",
+      "description": "A savings group",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "treasurerId": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "totalSavings": { "type": "number" },
+        "memberCount": { "type": "number" }
+      },
+      "required": ["name", "treasurerId"]
+    },
+    "Member": {
+      "title": "Member",
+      "description": "A member of a chama",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "displayName": { "type": "string" },
+        "role": { "type": "string", "enum": ["treasurer", "member"] },
+        "joinedAt": { "type": "string", "format": "date-time" },
+        "totalContributed": { "type": "number" }
+      },
+      "required": ["userId", "role"]
+    },
+    "Contribution": {
+      "title": "Contribution",
+      "description": "Record of a member's saving contribution",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "completed"] },
+        "paymentReference": { "type": "string" }
+      },
+      "required": ["userId", "amount", "status"]
+    },
+    "Loan": {
+      "title": "Loan",
+      "description": "A loan taken by a member",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "amount": { "type": "number" },
+        "interestRate": { "type": "number" },
+        "status": { "type": "string", "enum": ["requested", "active", "repaid", "defaulted"] },
+        "dueDate": { "type": "string", "format": "date-time" },
+        "requestedAt": { "type": "string", "format": "date-time" },
+        "approvedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "amount", "status"]
+    },
+    "MerrigoGroup": {
+      "title": "MerrigoGroup",
+      "description": "A merry-go-round cycle configuration",
+      "type": "object",
+      "properties": {
+        "chamaId": { "type": "string" },
+        "amount": { "type": "number" },
+        "frequency": { "type": "number", "description": "Frequency in days" },
+        "rotationOrder": { "type": "array", "items": { "type": "string" } },
+        "currentIndex": { "type": "number" },
+        "isActive": { "type": "boolean" },
+        "startDate": { "type": "string", "format": "date-time" }
+      },
+      "required": ["chamaId", "amount", "frequency", "rotationOrder"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles"
+    },
+    "/chamas/{chamaId}": {
+      "schema": "Chama",
+      "description": "Chama group details"
+    },
+    "/chamas/{chamaId}/members/{memberId}": {
+      "schema": "Member",
+      "description": "Members of a specific chama"
+    },
+    "/chamas/{chamaId}/contributions/{contributionId}": {
+      "schema": "Contribution",
+      "description": "Contributions for a chama"
+    },
+    "/chamas/{chamaId}/loans/{loanId}": {
+      "schema": "Loan",
+      "description": "Loans for a chama"
+    },
+    "/chamas/{chamaId}/merrigoGroups/{groupId}": {
+      "schema": "MerrigoGroup",
+      "description": "Merry-go-round groups"
+    }
+  }
+}

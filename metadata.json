@@ -1,0 +1,6 @@
+{
+  "name": "KIKOBA – Smart Chama Management System",
+  "description": "A comprehensive platform for managing Kenyan savings groups (chamas), featuring contribution tracking, loan management, and automated merry-go-round rotations with M-Pesa, Twilio, and Gemini AI integration.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
