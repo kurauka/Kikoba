@@ -21,7 +21,7 @@ export default function FloatingAdvisor() {
   }, [messages, loading]);
 
   // Ref: https://ai.google.dev/gemini-api/docs/api-key
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY;
   const ai = React.useMemo(() => apiKey ? new GoogleGenAI({ apiKey }) : null, [apiKey]);
 
   const handleSend = async (customMsg?: string) => {
