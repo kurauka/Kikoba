@@ -1,20 +1,51 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# KIKOBA - Financial Empowerment App
 
-# Run and deploy your AI Studio app
+KIKOBA is a modern wealth-management application designed for Kenyan savings groups (Chamas). It integrates social saving circles with advanced AI-driven financial advice to help communities grow their wealth sustainably.
 
-This contains everything you need to run your app locally.
+## 🚀 Key Features
 
-View your app in AI Studio: https://ai.studio/apps/adabf0bb-308d-44e8-a72d-53911090d278
+- **Multi-Language Support**: Fully localized in **English**, **Français**, and **Kiswahili**.
+- **KIKOBA AI Advisor**: A persistent, context-aware financial assistant powered by **Gemini 3 Flash**.
+- **Chama Management**: Track contributions, rotations (Merrigo), and group loans.
+- **Smart Savings**: Goal-based savings tracking with progress visualizations.
+- **M-Pesa Integration**: Seamlessly initiate deposits using STK Push (API integrated).
+- **Responsive Design**: Polished, mobile-first UI built with Tailwind CSS and Framer Motion.
 
-## Run Locally
+## 🛠️ Tech Stack
 
-**Prerequisites:**  Node.js
+- **Frontend**: React 18, Vite, TypeScript
+- **Styling**: Tailwind CSS
+- **Animations**: Framer Motion
+- **AI**: Google Gemini API (@google/genai)
+- **Internationalization**: i18next
+- **Database/Auth**: Firebase Firestore & Authentication
+- **Icons**: Lucide React
 
+## 📦 Installation
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Set up environment variables in `.env`:
+   ```env
+   GEMINI_API_KEY=your_gemini_key
+   VITE_FIREBASE_CONFIG=...
+   ```
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## 🌍 Language Support
+
+Toggle between English, French, and Swahili using the globe icon in the top header. The AI advisor will automatically adapt its responses and the entire UI will translate instantly.
+
+## 🤖 AI Capabilities
+
+The built-in advisor uses Gemini to provide culturally relevant advice on:
+- Minimizing loan default risks
+- Optimizing Chama interest rates
+- Group investment opportunities in the Kenyan market
+- Conflict resolution within savings circles

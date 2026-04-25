@@ -5,9 +5,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
 import ReactMarkdown from 'react-markdown';
 
-// Initialize Gemini directly on the frontend as per guidelines
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
-
 export default function Advisor() {
   const { t, i18n } = useTranslation();
   const [messages, setMessages] = React.useState<{ role: 'user' | 'ai', text: string }[]>([]);
@@ -27,9 +24,13 @@ export default function Advisor() {
     inputRef.current?.focus();
   }, []);
 
+  // Ref: https://ai.google.dev/gemini-api/docs/api-key
+  const apiKey = process.env.GEMINI_API_KEY;
+  const ai = React.useMemo(() => apiKey ? new GoogleGenAI({ apiKey }) : null, [apiKey]);
+
   const handleSend = async (customMsg?: string) => {
     const textToSend = customMsg || input.trim();
-    if (!textToSend || loading) return;
+    if (!textToSend || loading || !ai) return;
     
     setInput('');
     setMessages(prev => [...prev, { role: 'user', text: textToSend }]);
@@ -64,11 +65,11 @@ export default function Advisor() {
   ];
 
   return (
-    <div className="max-w-4xl mx-auto h-[calc(100vh-10rem)] flex flex-col relative">
+    <div className="max-w-4xl mx-auto h-[calc(100vh-10rem)] flex flex-col relative overflow-hidden bg-white/50 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-sm">
       {/* Messages Area */}
       <div 
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-4 py-8 space-y-12 no-scrollbar scroll-smooth"
+        className="flex-1 overflow-y-auto px-4 py-8 space-y-8 no-scrollbar scroll-smooth"
       >
         {messages.length === 0 ? (
           <motion.div 
@@ -121,7 +122,7 @@ export default function Advisor() {
                 )}
                 <div className={`max-w-[85%] md:max-w-[75%] ${msg.role === 'user' ? 'bg-indigo-600 text-white p-4 rounded-3xl rounded-tr-none shadow-xl shadow-indigo-100' : 'text-slate-800'}`}>
                   {msg.role === 'ai' ? (
-                    <div className="markdown-body prose prose-slate prose-sm max-w-none">
+                    <div className="markdown-body max-w-none">
                       <ReactMarkdown>{msg.text}</ReactMarkdown>
                     </div>
                   ) : (

@@ -18,6 +18,7 @@ import {
 import { auth } from '../firebase';
 import { motion, AnimatePresence } from 'motion/react';
 import { useTranslation } from 'react-i18next';
+import FloatingAdvisor from './FloatingAdvisor';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -47,7 +48,6 @@ export default function Layout({ children }: LayoutProps) {
     { name: t('Savings'), icon: PiggyBank, path: '/savings' },
     { name: t('Loans'), icon: ArrowRightLeft, path: '/loans' },
     { name: t('Merrigo'), icon: RotateCw, path: '/merrigo' },
-    { name: t('AI Advisor'), icon: MessageSquare, path: '/advisor' },
   ];
 
   const currentPath = location.pathname;
@@ -181,7 +181,11 @@ export default function Layout({ children }: LayoutProps) {
             </motion.div>
           </AnimatePresence>
         </div>
+        
       </main>
+
+      {/* Persistent Floating Advisor */}
+      <FloatingAdvisor />
 
       {/* Mobile Sidebar Overlay */}
       <AnimatePresence>
