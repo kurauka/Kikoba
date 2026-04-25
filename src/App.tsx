@@ -6,6 +6,7 @@ import Layout from './components/Layout';
 // Pages
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
+import Landing from './pages/Landing';
 import Chamas from './pages/Chamas';
 import Contributions from './pages/Contributions';
 import Merrigo from './pages/Merrigo';
@@ -31,82 +32,96 @@ function PrivateRoute({ children }: { children: React.ReactNode }) {
   return <Layout>{children}</Layout>;
 }
 
+function AppRouter() {
+  const { user } = useAuth();
+
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route 
+          path="/" 
+          element={
+            user ? <PrivateRoute><Dashboard /></PrivateRoute> : <Landing />
+          } 
+        />
+        <Route 
+          path="/dashboard" 
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/chamas" 
+          element={
+            <PrivateRoute>
+              <Chamas />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/contributions" 
+          element={
+            <PrivateRoute>
+              <Contributions />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/merrigo" 
+          element={
+            <PrivateRoute>
+              <Merrigo />
+            </PrivateRoute>
+          } 
+        />
+         <Route 
+          path="/advisor" 
+          element={
+            <PrivateRoute>
+              <Advisor />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/loans" 
+          element={
+            <PrivateRoute>
+              <Loans />
+            </PrivateRoute>
+          } 
+        />
+        <Route 
+          path="/savings" 
+          element={
+            <PrivateRoute>
+              <Savings />
+            </PrivateRoute>
+          } 
+        />
+        {/* Fallback for routes not yet implemented */}
+        <Route 
+          path="*" 
+          element={
+            <PrivateRoute>
+              <div className="p-8 text-center bg-white rounded-3xl border border-dashed border-slate-200">
+                <h2 className="text-xl font-bold text-slate-800">Page Under Construction</h2>
+                <p className="text-slate-500 mt-2">We are currently building this feature. Please check back soon!</p>
+              </div>
+            </PrivateRoute>
+          } 
+        />
+      </Routes>
+    </BrowserRouter>
+  );
+}
+
 export default function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/login" element={<Login />} />
-          <Route 
-            path="/" 
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/chamas" 
-            element={
-              <PrivateRoute>
-                <Chamas />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/contributions" 
-            element={
-              <PrivateRoute>
-                <Contributions />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/merrigo" 
-            element={
-              <PrivateRoute>
-                <Merrigo />
-              </PrivateRoute>
-            } 
-          />
-           <Route 
-            path="/advisor" 
-            element={
-              <PrivateRoute>
-                <Advisor />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/loans" 
-            element={
-              <PrivateRoute>
-                <Loans />
-              </PrivateRoute>
-            } 
-          />
-          <Route 
-            path="/savings" 
-            element={
-              <PrivateRoute>
-                <Savings />
-              </PrivateRoute>
-            } 
-          />
-          {/* Fallback for routes not yet implemented */}
-          <Route 
-            path="*" 
-            element={
-              <PrivateRoute>
-                <div className="p-8 text-center bg-white rounded-3xl border border-dashed border-slate-200">
-                  <h2 className="text-xl font-bold text-slate-800">Page Under Construction</h2>
-                  <p className="text-slate-500 mt-2">We are currently building this feature. Please check back soon!</p>
-                </div>
-              </PrivateRoute>
-            } 
-          />
-        </Routes>
-      </BrowserRouter>
+      <AppRouter />
     </AuthProvider>
   );
 }

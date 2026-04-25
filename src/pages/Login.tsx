@@ -36,7 +36,11 @@ export default function Login() {
       navigate('/');
     } catch (err: any) {
       console.error(err);
-      setError('Failed to sign in. Please try again.');
+      if (err.code === 'auth/unauthorized-domain') {
+        setError('Unauthorized Domain: This domain is not whitelisted in Firebase Auth. In the Firebase Console, go to Authentication > Settings > Authorized domains and add this domain.');
+      } else {
+        setError('Failed to sign in. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
